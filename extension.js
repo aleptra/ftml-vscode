@@ -25,6 +25,7 @@ function loadAttributes(context) {
 
 function activate(context) {
   loadAttributes(context)
+  console.log('FTML IntelliSense activated — loaded', allAttributes.length, 'attributes')
 
   diagnosticCollection = vscode.languages.createDiagnosticCollection('ftml')
   context.subscriptions.push(diagnosticCollection)
@@ -45,6 +46,10 @@ function activate(context) {
         const inValue = (textBefore.match(/"/g) || []).length % 2 === 1
         if (inValue) return []
 
+        // Get what the user is currently typing (partial attribute name)
+        const typingMatch = textBefore.match(/\s([a-z][a-z0-9-]*)$/i)
+        const typing = typingMatch ? typingMatch[1].toLowerCase() : ''
+
         const items = []
         for (const attr of allAttributes) {
           const item = new vscode.CompletionItem(attr.name, vscode.CompletionItemKind.Property)
@@ -59,6 +64,15 @@ function activate(context) {
             item.insertText = new vscode.SnippetString(`${attr.name}="$1"`)
           }
 
+          // Use filterText to match against what the user is typing
+          item.filterText = attr.name
+
+          // If user is already typing, set range to replace what they've typed
+          if (typing) {
+            const startPos = position.translate(0, -typing.length)
+            item.range = new vscode.Range(startPos, position)
+          }
+
           item.sortText = `0_${attr._category}_${attr.name}`
           items.push(item)
         }
@@ -66,7 +80,7 @@ function activate(context) {
         return items
       }
     },
-    ' ', '\n' // Trigger on space and newline inside tags
+    ' ', '\n', ...Array.from('abcdefghijklmnopqrstuvwxyz') // Trigger on space, newline, and all letters
   )
 
   // Validation on save and open

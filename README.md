@@ -11,13 +11,21 @@ Autocomplete and validation for FTML (Front Template Markup Language) attributes
 ## Installation
 
 ```bash
-cd dist/ftml-vscode
-npm install vscode --save-dev   # only needed for packaging
-npx vsce package                # creates .vsix file
-code --install-extension ftml-intellisense-0.1.0.vsix
+npm run setup
 ```
 
-Or for development:
+This installs dependencies, packages the `.vsix`, and installs the extension into VS Code.
+
+### Other scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run package` | Package the extension into a `.vsix` |
+| `npm run install` | Install the `.vsix` into VS Code |
+| `npm run uninstall` | Uninstall the extension from VS Code |
+| `npm run reinstall` | Uninstall, repackage, and reinstall |
+
+### Development
 
 1. Open this folder in VS Code
 2. Press F5 to launch Extension Development Host
