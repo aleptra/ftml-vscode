@@ -2,7 +2,7 @@
   "name": "ftml-intellisense",
   "displayName": "FTML IntelliSense",
   "description": "Autocomplete and validation for FTML (Front Template Markup Language) attributes",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "aleptra",
   "repository": {
     "type": "git",
@@ -32,11 +32,11 @@
   },
   "scripts": {
     "package": "echo y | vsce package",
-    "install": "code --install-extension ftml-intellisense-0.1.0.vsix && kiro --install-extension ftml-intellisense-0.1.0.vsix",
+    "install": "code --install-extension ftml-intellisense-*.vsix && kiro --install-extension ftml-intellisense-*.vsix",
     "uninstall": "(code --uninstall-extension aleptra.ftml-intellisense || true) && (kiro --uninstall-extension aleptra.ftml-intellisense || true)",
     "reinstall": "npm run uninstall && npm run package && npm run install",
     "setup": "npm i && npm run package && npm run install",
-    "push": "git add -A && git commit --allow-empty-message -m '' && git push --force"
+    "push": "npm version patch --no-git-tag-version && git add -A && git commit --allow-empty-message -m '' && git push --force"
   },
   "devDependencies": {
     "@vscode/vsce": "^3.0.0"
