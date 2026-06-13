@@ -2,7 +2,7 @@
   "name": "ftml-intellisense",
   "displayName": "FTML IntelliSense",
   "description": "Autocomplete and validation for FTML (Front Template Markup Language) attributes",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "aleptra",
   "repository": {
     "type": "git",

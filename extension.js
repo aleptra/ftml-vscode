@@ -47,40 +47,39 @@ function activate(context) {
         if (inValue) return []
 
         // Get what the user is currently typing (partial attribute name)
-        const typingMatch = textBefore.match(/\s([a-z][a-z0-9-]*)$/i)
+        // Match after space, after closing quote, or at start of attributes
+        const typingMatch = textBefore.match(/(?:\s|"|')([a-z][a-z0-9-]*)$/i)
         const typing = typingMatch ? typingMatch[1].toLowerCase() : ''
 
         const items = []
         for (const attr of allAttributes) {
           const item = new vscode.CompletionItem(attr.name, vscode.CompletionItemKind.Property)
-          item.detail = `[${attr._category}] ${attr.description}`
+          item.detail = `FTML · ${attr._category}`
           item.documentation = new vscode.MarkdownString(attr.description)
 
           if (attr.values) {
-            // Insert with snippet for enum values
             const choices = attr.values.join(',')
             item.insertText = new vscode.SnippetString(`${attr.name}="\${1|${choices}|}"`)
           } else {
             item.insertText = new vscode.SnippetString(`${attr.name}="$1"`)
           }
 
-          // Use filterText to match against what the user is typing
           item.filterText = attr.name
+          item.sortText = `!0_${attr.name}`
+          item.preselect = false
 
-          // If user is already typing, set range to replace what they've typed
           if (typing) {
             const startPos = position.translate(0, -typing.length)
             item.range = new vscode.Range(startPos, position)
           }
 
-          item.sortText = `0_${attr._category}_${attr.name}`
           items.push(item)
         }
 
-        return items
+        return new vscode.CompletionList(items, false)
       }
     },
-    ' ', '\n', ...Array.from('abcdefghijklmnopqrstuvwxyz') // Trigger on space, newline, and all letters
+    ' ', '\n', '"', ...Array.from('abcdefghijklmnopqrstuvwxyz') // Trigger on space, newline, closing quote, and all letters
   )
 
   // Validation on save and open
